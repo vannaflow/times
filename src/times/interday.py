@@ -6,6 +6,7 @@ def is_weekday(date: datetime.date) -> bool:
 
 
 def is_trading_day(date: datetime.date) -> bool:
+    # TODO: Check if it is a holiday.
     return is_weekday(date)
 
 

@@ -1,5 +1,5 @@
 {
-  "cSpell.words": ["pipenv"],
+  "cSpell.words": ["pipenv", "pylint", "pylint", "numpy"],
   "python.linting.banditEnabled": false,
   "python.linting.pylintEnabled": true,
   "python.linting.mypyEnabled": false,
