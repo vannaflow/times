@@ -1,6 +1,6 @@
 import datetime
 
-from src.times.vix import vix_expiry, vix_expiry_from_opex
+from src.times.vix import get_days_in_vix_cycle, vix_expiry, vix_expiry_from_opex
 
 
 def test_vix_expiry_from_opex() -> None:
@@ -28,3 +28,14 @@ def test_vix_expiry() -> None:
 
     start = datetime.date(2020, 6, 27)
     assert vix_expiry(start, 31) == expected
+
+
+def test_get_days_in_vix_cycle() -> None:
+    assert get_days_in_vix_cycle() == (0, 0)
+
+    expected_days_in_cycle = 19
+    expected_days_till_vix_expiry = 10
+    assert get_days_in_vix_cycle(datetime.date(2022, 6, 1)) == (
+        expected_days_in_cycle,
+        expected_days_till_vix_expiry,
+    )

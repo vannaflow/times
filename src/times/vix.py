@@ -33,23 +33,27 @@ def vix_expiry(start: datetime.date, maturity: int) -> datetime.date:
     return vix_expiry_from_opex(start.year, month + maturity)
 
 
-def last_trading_days_till_expiry(
-    last: Optional[datetime.date] = None,
+def get_days_in_vix_cycle(
+    start: Optional[datetime.date] = None,
 ) -> Tuple[int, int]:
-    # Iterate back in time from the last trading day to find a contract with
-    # one or fewer days until expiry to determine the number of days in the
-    # current expiration cycle.
-    if not last:
+    # A new cycle begins the day after there is one day to VIX expiry.
+
+    if not start:
         return 0, 0
 
+    next = start
     days_in_cycle = 0
+    days_till_vix_expiry = None
     while True:
-        days_till_expiry = trading_days_till_expiry(last, vix_expiry(last, 1))
+        days_till_expiry = trading_days_till_expiry(next, vix_expiry(next, 1))
 
-        if days_till_expiry <= 1:
+        if days_till_vix_expiry is None:
+            days_till_vix_expiry = days_till_expiry
+
+        if days_till_expiry == 1:
             break
 
         days_in_cycle = days_till_expiry
-        last = last_trading_day(last)
+        next = last_trading_day(next)
 
-    return (days_in_cycle, days_till_expiry)
+    return (days_in_cycle, days_till_vix_expiry)

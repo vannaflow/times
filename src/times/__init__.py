@@ -7,4 +7,4 @@ from .interday import (
     next_trading_day,
     trading_days_till_expiry,
 )
-from .vix import last_trading_days_till_expiry, vix_expiry, vix_expiry_from_opex
+from .vix import get_days_in_vix_cycle, vix_expiry, vix_expiry_from_opex
