@@ -1,20 +1,20 @@
 import datetime
 from typing import Optional, Tuple
 
-import numpy as np
-import pandas as pd
+from .interday import last_trading_day, trading_days_till_expiry
 
-from .interday import last_trading_day
+# VIX expiry is usually 30 days before the third Friday of the following month
+# (OPEX). If there are public holidays, the expiration is on the business day
+# before.
 
 
-def last_trading_day_before_vix_expiry(
-    opex_month: int, opex_year: int
+def vix_expiry_from_opex(
+    opex_year: int,
+    opex_month: int,
 ) -> datetime.date:
-    # Derive the last trading day before VIX expiration, given the OPEX expiry
-    # month and year.
     if opex_month > 12:
-        opex_year += 1
-        opex_month = 1
+        opex_year += opex_month // 12
+        opex_month = opex_month % 12
 
     opex_date = datetime.date(opex_year, opex_month, 1)
     days_till_friday = {0: 4, 1: 3, 2: 2, 3: 1, 4: 0, 5: 6, 6: 5}
@@ -29,7 +29,7 @@ def vix_expiry(start: datetime.date, maturity: int) -> datetime.date:
     year = start.year
 
     # Get the next month's VIX expiration if this month has already passed.
-    if (last_trading_day_before_vix_expiry(month + 1, year) - start).days < 0:
+    if (vix_expiry_from_opex(year, month + 1) - start).days < 0:
         month += 1
 
     # Rollover the date if the contract is in the new year.
@@ -38,15 +38,7 @@ def vix_expiry(start: datetime.date, maturity: int) -> datetime.date:
         month -= 12
         year += 1
 
-    return last_trading_day_before_vix_expiry(month + maturity, year)
-
-
-def trading_days_till_expiry(start: datetime.date, expiry: datetime.date) -> int:
-    # Find the number of days excluding weekends till expiration but count the
-    # start and expiry date as days.
-    return int(
-        np.busday_count(pd.Timestamp(start).date(), pd.Timestamp(expiry).date()) + 1
-    )
+    return vix_expiry_from_opex(year, month + maturity)
 
 
 def last_trading_days_till_expiry(

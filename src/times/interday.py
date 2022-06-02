@@ -1,5 +1,5 @@
 import datetime
-from typing import List
+from typing import Iterable, List
 
 import pandas as pd
 from dateutil import parser
@@ -17,7 +17,7 @@ def get_holidays(date: datetime.date) -> List[datetime.date]:
     df = pd.read_html(url)
 
     dates = []
-    for i in range(0, len(df[0])):
+    for i in range(len(df[0])):
         date = parser.parse(df[0][1][i]).date()
         dates.append(date)
 
@@ -48,3 +48,18 @@ def last_trading_day(date: datetime.date) -> datetime.date:
         date -= datetime.timedelta(days=1)
 
     return date
+
+
+def date_range(start: datetime.date, end: datetime.date) -> Iterable[datetime.date]:
+    for i in range((end - start).days + 1):
+        yield start + datetime.timedelta(i)
+
+
+def trading_days_till_expiry(start: datetime.date, end: datetime.date) -> int:
+    count = 0
+
+    for date in date_range(start, end):
+        if is_trading_day(date):
+            count += 1
+
+    return count
