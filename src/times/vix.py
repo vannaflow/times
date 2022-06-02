@@ -26,19 +26,11 @@ def vix_expiry_from_opex(
 
 def vix_expiry(start: datetime.date, maturity: int) -> datetime.date:
     month = start.month
-    year = start.year
 
-    # Get the next month's VIX expiration if this month has already passed.
-    if (vix_expiry_from_opex(year, month + 1) - start).days < 0:
+    if (vix_expiry_from_opex(start.year, month + 1) - start).days < 0:
         month += 1
 
-    # Rollover the date if the contract is in the new year.
-    if month + maturity > 12:
-        # Roll over the year and subtract 12 months.
-        month -= 12
-        year += 1
-
-    return vix_expiry_from_opex(year, month + maturity)
+    return vix_expiry_from_opex(start.year, month + maturity)
 
 
 def last_trading_days_till_expiry(
