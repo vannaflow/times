@@ -1,5 +1,15 @@
 {
-  "cSpell.words": ["interday", "numpy", "pipenv", "pylint"],
+  "cSpell.words": [
+    "interday",
+    "lxml",
+    "numpy",
+    "pipenv",
+    "pylint",
+    "pytest",
+    "snok",
+    "venv",
+    "virtualenvs"
+  ],
   "python.linting.banditEnabled": false,
   "python.linting.pylintEnabled": true,
   "python.linting.mypyEnabled": false,
