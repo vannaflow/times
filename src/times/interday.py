@@ -9,9 +9,15 @@ def is_weekday(date: datetime.date) -> bool:
     return date.weekday() < 5
 
 
+holiday_cache = {}
+
+
 def get_holidays(date: datetime.date) -> List[datetime.date]:
     if date.year < 1990 or date.year > 2023:
         return []
+
+    if date.year in holiday_cache:
+        return holiday_cache[date.year]
 
     url = f"http://www.market-holidays.com/{date.year}"
     df = pd.read_html(url)
@@ -20,6 +26,8 @@ def get_holidays(date: datetime.date) -> List[datetime.date]:
     for i in range(len(df[0])):
         date = parser.parse(df[0][1][i]).date()
         dates.append(date)
+
+    holiday_cache[date.year] = dates
 
     return dates
 
